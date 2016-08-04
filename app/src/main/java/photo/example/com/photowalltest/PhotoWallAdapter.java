@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,9 @@ import java.util.Set;
  */
 public class PhotoWallAdapter extends ArrayAdapter<String> implements AbsListView.OnScrollListener {
 
+
+    private String TAG = "DEBUG";
+
     //记录正在下载或者等待下载的任务
     private Set<BitmapWorkTask> taskCollection;
 
@@ -39,7 +43,7 @@ public class PhotoWallAdapter extends ArrayAdapter<String> implements AbsListVie
     private int mVisibleImageCount;
 
     //是否第一次进入程序
-    private boolean isFirstEnter;
+    private boolean isFirstEnter = true;
 
 
     public PhotoWallAdapter(Context context, int resource, String[] objects, GridView photoWall) {
@@ -48,17 +52,20 @@ public class PhotoWallAdapter extends ArrayAdapter<String> implements AbsListVie
         taskCollection = new HashSet<BitmapWorkTask>();
         int maxMemory = (int) Runtime.getRuntime().maxMemory();
         int cacheSize = maxMemory/8;
+        Log.d(TAG, String.valueOf(cacheSize));
         mLruCache = new LruCache<String,Bitmap>(cacheSize){
             @Override
             protected int sizeOf(String key, Bitmap value) {
                 return value.getByteCount();
             }
         };
+        Log.d(TAG,"构造方法");
         mPhotoWall.setOnScrollListener(this);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d(TAG,"getView");
         final String url = getItem(position);
         View view;
         if(convertView == null) {
@@ -76,6 +83,7 @@ public class PhotoWallAdapter extends ArrayAdapter<String> implements AbsListVie
 
     //给imageView添加图片
     private void setImageView(String url, ImageView imageView) {
+        Log.d(TAG,"setImageView");
         Bitmap bitmap = getBitmapFromCache(url);
         if(bitmap == null) {
             imageView.setImageResource(R.mipmap.empty);
@@ -112,6 +120,7 @@ public class PhotoWallAdapter extends ArrayAdapter<String> implements AbsListVie
         mFirstVisibleImage = firstVisibleItem;
         if (isFirstEnter && visibleItemCount > 0 ) {
             loadBitmaps(firstVisibleItem,visibleItemCount);
+            Log.d(TAG, "----第一次进来");
             isFirstEnter = false;
         }
     }
@@ -119,6 +128,7 @@ public class PhotoWallAdapter extends ArrayAdapter<String> implements AbsListVie
     //加载屏幕上的bitmap对象
     private void loadBitmaps(int first, int all) {
         try {
+            Log.d(TAG,"loadBitmaps");
             for (int i=first; i<first+all; i++) {
                 String imgUrl = Images.allImageUrls[i];
                 Bitmap bitmap = getBitmapFromCache(imgUrl);
@@ -185,8 +195,10 @@ public class PhotoWallAdapter extends ArrayAdapter<String> implements AbsListVie
                 conn.setConnectTimeout(5*1000);
                 conn.setReadTimeout(10 * 10000);
                 bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+                Log.d(TAG, "---xiazai");
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d(TAG, "---xiazai出错");
             } finally {
                 if (conn != null) {
                     conn.disconnect();
