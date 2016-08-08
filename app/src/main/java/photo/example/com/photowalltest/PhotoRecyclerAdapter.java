@@ -15,6 +15,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
+import java.util.List;
+
 /**
  * Created by slience on 2016/8/5.
  */
@@ -26,23 +28,18 @@ public class PhotoRecyclerAdapter extends RecyclerView.Adapter<PhotoRecyclerAdap
 
     private LruCache<String, Bitmap> mLruCache;
 
+    private List<Integer> data;
+
     private String mCu=null;
 
     private String[] mUrl;
     private String TAG = "DEBUG";
 
-    public PhotoRecyclerAdapter(Context context) {
+    public PhotoRecyclerAdapter(Context context,List<Integer> d) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
         mUrl = Images.allImageUrls;
-        int maxMemory = (int) Runtime.getRuntime().maxMemory();
-        int cacheSize = maxMemory/8;
-        mLruCache = new LruCache<String,Bitmap>(cacheSize){
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount();
-            }
-        };
+        data = d;
         Log.d(TAG,"构造方法");
         Log.d(TAG, String.valueOf(mUrl.length));
     }
@@ -54,44 +51,11 @@ public class PhotoRecyclerAdapter extends RecyclerView.Adapter<PhotoRecyclerAdap
 
     @Override
     public void onBindViewHolder(PhotoRecyclerHolder holder, int position) {
-        mCu = mUrl[position];
-        Bitmap bitmap = getBitmapFromCache(mUrl[position]);
-        if (bitmap != null) {
-            holder.imge.setImageBitmap(bitmap);
-        } else {
-            Glide.with(mContext)
-                    .load(mUrl[position])
-                    .fitCenter()
-                    .into(holder.imge);
-            Glide.with(mContext).load(mUrl[position]).asBitmap().into(target);
-        }
+        Glide.with(mContext)
+                .load(data.get(position))
 
+                .into(holder.imge);
     }
-
-
-    public SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            addBitmapToCache(mCu,bitmap);
-        }
-    };
-
-
-    //添加图片到LruCache
-    public void addBitmapToCache(String key, Bitmap bitmap) {
-        if(getBitmapFromCache(key) == null) {
-            mLruCache.put(key, bitmap);
-        }
-    }
-
-
-    //从LruCache中取图片
-    public Bitmap getBitmapFromCache(String url) {
-        return mLruCache.get(url);
-    }
-
 
     @Override
     public int getItemCount() {
