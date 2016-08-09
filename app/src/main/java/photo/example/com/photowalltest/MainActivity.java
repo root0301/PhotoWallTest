@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        add();
         initRecyclerView();
 /*        photoWall = (GridView) findViewById(R.id.photo_wall);
         adapter = new PhotoWallAdapter(this,0, Images.allImageUrls, photoWall);
@@ -39,8 +40,8 @@ public class MainActivity extends Activity {
     private void initRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         adapter = new PhotoRecyclerAdapter(this,ImageId);
-       /* recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));*/
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+       /* recyclerView.setLayoutManager(new LinearLayoutManager(this));*/
         recyclerView.setAdapter(adapter);
     }
 
@@ -58,7 +59,16 @@ public class MainActivity extends Activity {
         ImageId.add(R.drawable.i8);
         ImageId.add(R.drawable.i9);
         ImageId.add(R.drawable.i10);
-
+        ImageId.add(R.drawable.i11);
+        ImageId.add(R.drawable.i12);
+        ImageId.add(R.drawable.i13);
+        ImageId.add(R.drawable.i14);
+        ImageId.add(R.drawable.i15);
+        ImageId.add(R.drawable.i16);
+        ImageId.add(R.drawable.i17);
+        ImageId.add(R.drawable.i18);
+        ImageId.add(R.drawable.i19);
+        ImageId.add(R.drawable.i20);
     }
 
 

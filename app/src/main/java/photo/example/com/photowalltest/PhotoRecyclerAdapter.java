@@ -1,6 +1,7 @@
 package photo.example.com.photowalltest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +40,9 @@ public class PhotoRecyclerAdapter extends RecyclerView.Adapter<PhotoRecyclerAdap
 
     public PhotoRecyclerAdapter(Context context,List<Integer> d) {
         mContext = context;
+        data = d;
         mLayoutInflater = LayoutInflater.from(context);
         mUrl = Images.allImageUrls;
-        data = d;
         Log.d(TAG,"构造方法");
         Log.d(TAG, String.valueOf(mUrl.length));
     }
@@ -50,11 +53,22 @@ public class PhotoRecyclerAdapter extends RecyclerView.Adapter<PhotoRecyclerAdap
     }
 
     @Override
-    public void onBindViewHolder(PhotoRecyclerHolder holder, int position) {
+    public void onBindViewHolder(PhotoRecyclerHolder holder, final int position) {
+        DrawableRequestBuilder<Integer> thumbnailRequest = Glide
+                .with(mContext)
+                .load(R.mipmap.waitg);
         Glide.with(mContext)
-                .load(data.get(position))
-
+                .load(mUrl[position])
+                .thumbnail(thumbnailRequest)
                 .into(holder.imge);
+        holder.imge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,SingleActivity.class);
+                intent.putExtra("url",mUrl[position]);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
