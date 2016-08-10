@@ -11,15 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by slience on 2016/8/5.
  */
@@ -31,16 +24,13 @@ public class PhotoRecyclerAdapter extends RecyclerView.Adapter<PhotoRecyclerAdap
 
     private LruCache<String, Bitmap> mLruCache;
 
-    private List<Integer> data;
-
     private String mCu=null;
 
     private String[] mUrl;
     private String TAG = "DEBUG";
 
-    public PhotoRecyclerAdapter(Context context,List<Integer> d) {
+    public PhotoRecyclerAdapter(Context context) {
         mContext = context;
-        data = d;
         mLayoutInflater = LayoutInflater.from(context);
         mUrl = Images.allImageUrls;
         Log.d(TAG,"构造方法");
